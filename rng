@@ -1,0 +1,97 @@
+local widget = require("widget")
+
+-- Set up display objects
+local bg = display.newRect(display.contentCenterX, display.contentCenterY, display.actualContentWidth, display.actualContentHeight)
+bg:setFillColor(0)
+
+local minText = display.newText({
+    text = "Min",
+    x = display.contentCenterX - 90,
+    y = display.contentHeight - 80,
+    width = 50,
+    align = "center",
+    fontSize = 14
+})
+minText:setFillColor(1)
+
+local minInput = native.newTextField(display.contentCenterX - 90, display.contentHeight - 40, 50, 20)
+
+local maxText = display.newText({
+    text = "Max",
+    x = display.contentCenterX + 90,
+    y = display.contentHeight - 80,
+    width = 50,
+    align = "center",
+    fontSize = 14
+})
+maxText:setFillColor(1)
+
+local maxInput = native.newTextField(display.contentCenterX + 90, display.contentHeight - 40, 50, 20)
+
+local intervalText = display.newText({
+    text = "Interval (in seconds)",
+    x = display.contentCenterX,
+    y = display.contentHeight - 80,
+    width = 150,
+    align = "center",
+    fontSize = 14
+})
+intervalText:setFillColor(1)
+
+local intervalInput = native.newTextField(display.contentCenterX, display.contentHeight - 100, 100, 20)
+intervalInput.text = "1"
+
+local numberText = display.newText({
+    text = "",
+    x = display.contentCenterX,
+    y = display.contentCenterY,
+    width = 200,
+    align = "center",
+    fontSize = 150
+})
+numberText:setFillColor(1)
+
+-- Function to generate random number and set text color
+-- Array of colors to choose from
+local colors = { {1, 0, 0}, {0, 1, 0}, {0, 0, 1}, {1, 1, 0}, {1, 1, 1} }
+
+local function generateNumber()
+    local min = tonumber(minInput.text) or 0
+    local max = tonumber(maxInput.text) or 0
+    local num = math.random(min, max)
+    numberText.text = num
+    local colorIndex = math.random(#colors)
+    numberText:setFillColor(unpack(colors[colorIndex]))
+end
+
+-- Function to start the timer
+local function startTimer()
+    local interval = tonumber(intervalInput.text) or 1
+    timer.performWithDelay(interval * 1000, generateNumber, 0)
+end
+
+-- Start button
+local startButton = widget.newButton({
+    label = "Start",
+    x = display.contentCenterX,
+    y = display.contentHeight - 70,
+    width = 100,
+    height = 40,
+    shape = "roundedRect",
+    cornerRadius = 2,
+    fillColor = { default={1,1,1,1}, over={0.5,0.5,0.5,1} },
+    labelColor = { default={0,0,0}, over={1,1,1} },
+    onRelease = startTimer
+})
+
+-- Center the number text
+numberText.anchorX = 0.5
+numberText.anchorY = 0.5
+
+-- Move the text box elements down
+minText.y = display.contentHeight - 30
+minInput.y = display.contentHeight - 10
+maxText.y = display.contentHeight - 30
+maxInput.y = display.contentHeight - 10
+intervalText.y = display.contentHeight - 30
+intervalInput.y = display.contentHeight - 10
